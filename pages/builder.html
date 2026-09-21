@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuit Builder | LogicLab</title>
+    <meta name="description" content="Free online drag-and-drop digital logic circuit designer. Wire switches, clocks, AND/OR/NOT/NAND/XOR gates and LEDs, then run and watch signals travel.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/editor.css">
+</head>
+<body class="dark-mode">
+
+    <nav class="navbar">
+        <div class="logo">⚡ LogicLab</div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="simulator.html">Simulator</a></li>
+            <li><a href="learn.html">Learn</a></li>
+            <li><a href="builder.html" class="active">Circuit Builder</a></li>
+            <li><a href="quiz.html">Quiz</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="theme-toggle">🌙</button>
+            <div class="hamburger">☰</div>
+        </div>
+    </nav>
+
+    <div id="editor-app" class="editor-app">
+
+        <!-- ======= Toolbar ======= -->
+        <div class="editor-toolbar" id="toolbar">
+
+            <div class="tb-group">
+                <button class="tool-btn" id="btn-new" title="New circuit (empty)">✦</button>
+                <button class="tool-btn" id="btn-save" title="Save (Ctrl+S)">💾</button>
+                <button class="tool-btn" id="btn-open" title="Load saved project (Ctrl+O)">📂</button>
+                <button class="tool-btn" id="btn-export" title="Export as JSON file">⇩</button>
+                <button class="tool-btn" id="btn-import" title="Import a JSON circuit">⇧</button>
+                <input type="file" id="file-import" accept=".json,application/json" hidden>
+            </div>
+
+            <div class="tb-group">
+                <button class="tool-btn" id="btn-undo" title="Undo (Ctrl+Z)">↶</button>
+                <button class="tool-btn" id="btn-redo" title="Redo (Ctrl+Y)">↷</button>
+                <button class="tool-btn" id="btn-delete" title="Delete selection (Del)">🗑</button>
+            </div>
+
+            <div class="tb-group">
+                <button class="tool-btn active" id="btn-tool-select" title="Select / move">🖱</button>
+                <button class="tool-btn" id="btn-tool-wire" title="Wire tool — drag port to port">🔗</button>
+                <button class="tool-btn active" id="btn-grid" title="Toggle snap grid">▦</button>
+                <button class="tool-btn" id="btn-autolayout" title="Auto arrange inputs → gates → outputs">✦ Layout</button>
+            </div>
+
+            <div class="tb-group">
+                <button class="tool-btn run-btn" id="btn-run" title="Run simulation">▶ Run</button>
+                <button class="tool-btn pause-btn" id="btn-pause" title="Pause">⏸ Pause</button>
+                <button class="tool-btn step-btn" id="btn-step" title="Step through the circuit">⏭ Step</button>
+                <button class="tool-btn reset-btn" id="btn-reset" title="Reset simulation">⟲</button>
+                <span class="step-label" id="step-label">STEP</span>
+                <div class="speed-wrap">
+                    <span class="tb-label">speed</span>
+                    <input type="range" id="speed-slider" min="60" max="260" value="200" step="10">
+                    <span class="speed-val" id="speed-val">NORM</span>
+                </div>
+            </div>
+
+            <div class="tb-group" style="margin-left:auto;">
+                <button class="tool-btn" id="btn-sidebar" title="Toggle component palette">◧</button>
+                <button class="tool-btn" id="inspector-toggle" title="Toggle inspector">◫</button>
+            </div>
+        </div>
+
+        <!-- ======= Workspace ======= -->
+        <div class="editor-main">
+
+            <!-- Component palette -->
+            <aside class="sidebar" id="sidebar">
+                <div class="palette-title">Inputs</div>
+                <div class="comp-item" data-type="SWITCH" title="Click to toggle">
+                    <div class="ci-icon">S</div>
+                    <div><div class="ci-name">Switch</div><div class="ci-desc">toggle 0 / 1</div></div>
+                </div>
+                <div class="comp-item" data-type="CLOCK" title="Auto toggling clock">
+                    <div class="ci-icon">~</div>
+                    <div><div class="ci-name">Clock</div><div class="ci-desc">auto pulse while running</div></div>
+                </div>
+                <div class="comp-item" data-type="HIGH">
+                    <div class="ci-icon">1</div>
+                    <div><div class="ci-name">Constant HIGH</div><div class="ci-desc">always outputs 1</div></div>
+                </div>
+                <div class="comp-item" data-type="LOW">
+                    <div class="ci-icon">0</div>
+                    <div><div class="ci-name">Constant LOW</div><div class="ci-desc">always outputs 0</div></div>
+                </div>
+
+                <div class="palette-title">Logic Gates</div>
+                <div class="comp-item" data-type="AND">
+                    <div class="ci-icon">&</div>
+                    <div><div class="ci-name">AND</div><div class="ci-desc">1 when all inputs are 1</div></div>
+                </div>
+                <div class="comp-item" data-type="OR">
+                    <div class="ci-icon">≥1</div>
+                    <div><div class="ci-name">OR</div><div class="ci-desc">1 when any input is 1</div></div>
+                </div>
+                <div class="comp-item" data-type="NOT">
+                    <div class="ci-icon">!</div>
+                    <div><div class="ci-name">NOT</div><div class="ci-desc">inverts the signal</div></div>
+                </div>
+                <div class="comp-item" data-type="NAND">
+                    <div class="ci-icon">N</div>
+                    <div><div class="ci-name">NAND</div><div class="ci-desc">universal gate, inverted AND</div></div>
+                </div>
+                <div class="comp-item" data-type="NOR">
+                    <div class="ci-icon">N</div>
+                    <div><div class="ci-name">NOR</div><div class="ci-desc">universal gate, inverted OR</div></div>
+                </div>
+                <div class="comp-item" data-type="XOR">
+                    <div class="ci-icon">⊕</div>
+                    <div><div class="ci-name">XOR</div><div class="ci-desc">1 when inputs differ</div></div>
+                </div>
+                <div class="comp-item" data-type="XNOR">
+                    <div class="ci-icon">≡</div>
+                    <div><div class="ci-name">XNOR</div><div class="ci-desc">1 when inputs match</div></div>
+                </div>
+
+                <div class="palette-title">Outputs</div>
+                <div class="comp-item" data-type="LED">
+                    <div class="ci-icon">●</div>
+                    <div><div class="ci-name">LED</div><div class="ci-desc">glows when input is 1</div></div>
+                </div>
+                <div class="comp-item" data-type="BULB">
+                    <div class="ci-icon">O</div>
+                    <div><div class="ci-name">Light Bulb</div><div class="ci-desc">lights up when on</div></div>
+                </div>
+                <div class="comp-item" data-type="DIGOUT">
+                    <div class="ci-icon">#</div>
+                    <div><div class="ci-name">Digital Output</div><div class="ci-desc">shows numeric value</div></div>
+                </div>
+                <div class="comp-item" data-type="PROBE">
+                    <div class="ci-icon">?</div>
+                    <div><div class="ci-name">Logic Probe</div><div class="ci-desc">reads HIGH / LOW</div></div>
+                </div>
+            </aside>
+
+            <!-- Canvas -->
+            <div class="canvas-wrap" id="canvas-wrap">
+                <svg id="canvas"></svg>
+
+                <div class="empty-hint" id="empty-hint">
+                    <div class="eh-icon">⚡</div>
+                    <div class="eh-title">Welcome to the lab.</div>
+                    <div class="eh-sub">Click parts from the palette (or drag them here), then wire <b>output → input</b> ports.
+                        Press <kbd>▶ Run</kbd> and watch the signal travel to the bulb.</div>
+                    <div class="eh-sub" style="font-family:var(--mono);font-size:0.75rem;">
+                        scroll = zoom · space + drag = pan · shift+click = multi-select · Del = delete · Ctrl+Z = undo</div>
+                </div>
+
+                <div class="zoom-controls">
+                    <button class="tool-btn" id="zoom-out" title="Zoom out">−</button>
+                    <span class="zoom-val" id="zoom-label">100%</span>
+                    <button class="tool-btn" id="zoom-in" title="Zoom in">＋</button>
+                    <button class="tool-btn" id="zoom-fit" title="Fit to view">⛶</button>
+                </div>
+            </div>
+
+            <!-- Inspector -->
+            <aside class="inspector" id="inspector">
+                <div class="insp-header">
+                    <span>Inspector</span>
+                    <button id="inspector-close-btn" title="Close inspector">✕</button>
+                </div>
+                <div id="inspector-body"></div>
+            </aside>
+        </div>
+
+        <!-- ======= Status bar ======= -->
+        <div class="statusbar">
+            <span class="dot ok" id="status-dot"></span>
+            <span class="status-text" id="status-text">Ready</span>
+            <span class="status-detail" id="status-detail"></span>
+            <span class="sb-hint">space+drag pan · wheel zoom · Del delete</span>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="../js/gates.js"></script>
+    <script src="../js/circuit-engine.js"></script>
+    <script src="../js/wire-system.js"></script>
+    <script src="../js/truth-table.js"></script>
+    <script src="../js/boolean.js"></script>
+    <script src="../js/signal-animation.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/circuit-editor.js"></script>
+    <script src="../js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Digital Logic Gates | LogicLab</title>
+    <meta name="description" content="Learn AND, OR, NOT, NAND, NOR, XOR and XNOR logic gates with symbols, boolean expressions, truth tables and De Morgan's theorems.">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dark-mode">
+
+    <nav class="navbar">
+        <div class="logo">⚡ LogicLab</div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="simulator.html">Simulator</a></li>
+            <li><a href="learn.html" class="active">Learn</a></li>
+            <li><a href="builder.html">Circuit Builder</a></li>
+            <li><a href="quiz.html">Quiz</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="theme-toggle">🌙</button>
+            <div class="hamburger">☰</div>
+        </div>
+    </nav>
+
+    <main class="page">
+        <div class="page-head">
+            <h1>Learn Digital Logic</h1>
+            <p>Every logic gate with its symbol, boolean expression and truth table — ready for DTM revision.</p>
+        </div>
+
+        <div class="grid grid-2" id="gate-cards"></div>
+
+        <div class="note" style="margin-top:2.5rem;">
+            <b>De Morgan's Theorems.</b>
+            (A · B)′ = A′ + B′  and  (A + B)′ = A′ · B′. This means every NAND can behave like an OR,
+            and every NOR can behave like an AND — that's why NAND and NOR are called <b>universal gates</b>.
+        </div>
+
+        <div class="note" style="border-left-color:var(--cyan);background:rgba(34,211,238,0.07);">
+            <b>Try it yourself.</b> Open the <b>Circuit Builder</b>, drop two switches into an AND gate,
+            wire it to an LED, and press ▶ Run.
+        </div>
+    </main>
+
+    <footer class="site-foot">
+        <span>⚡ LogicLab — Learn by building.</span>
+        <span>Truth tables are generated live from the simulation engine.</span>
+    </footer>
+
+    <script src="../js/gates.js"></script>
+    <script src="../js/truth-table.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var types = ['AND', 'OR', 'NOT', 'NAND', 'NOR', 'XOR', 'XNOR'];
+            var host = document.getElementById('gate-cards');
+            types.forEach(function (t) {
+                var c = window.CircuitComponents[t]; if (!c) return;
+                var expr = window.BooleanTheory ? '' : '';
+                var card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML =
+                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;">' +
+                        '<h3 style="margin:0;">' + c.name + '</h3>' +
+                        '<svg width="70" height="42" data-sym="' + t + '" class="sym-box"></svg>' +
+                    '</div>' +
+                    '<p>' + c.desc + '</p>' +
+                    '<div class="expr-chip" style="margin:.8rem 0 .3rem;">' + c.expr + '</div>' +
+                    '<div class="tt" id="tt-' + t + '"></div>';
+                host.appendChild(card);
+                document.getElementById('tt-' + t).innerHTML = window.TruthTable.html(t);
+            });
+
+            /* draw the classic gate symbols */
+            var S = window.GateSymbols;
+            var opts = { AND: { d: S.AND }, OR: { d: S.OR }, NOT: { d: S.NOT_TRI, bubble: [8, 18, 6] },
+                NAND: { d: S.NAND, bubble: [13, 18, 6] }, NOR: { d: S.NOR, bubble: [13, 18, 6] },
+                XOR: { d: S.OR, extra: S.XOR_TAIL }, XNOR: { d: S.OR, extra: S.XNOR_TAIL, bubble: [13, 18, 6] } };
+            document.querySelectorAll('.sym-box').forEach(function (svg) {
+                var o = opts[svg.getAttribute('data-sym')];
+                var g = o;
+                var NS = 'http://www.w3.org/2000/svg';
+                var scale = 0.72, tx = 1, ty = 0;
+                function p(d) {
+                    var el = document.createElementNS(NS, 'path');
+                    el.setAttribute('d', d);
+                    el.setAttribute('transform', 'translate(' + tx + ' ' + ty + ') scale(' + scale + ')');
+                    el.setAttribute('fill', 'none');
+                    el.setAttribute('stroke', 'currentColor');
+                    el.setAttribute('stroke-width', '1.8');
+                    el.setAttribute('stroke-linejoin', 'round');
+                    svg.appendChild(el);
+                }
+                function b(x, y, r) {
+                    var c = document.createElementNS(NS, 'circle');
+                    c.setAttribute('cx', tx + x * scale);
+                    c.setAttribute('cy', ty + y * scale);
+                    c.setAttribute('r', r + 0.5);
+                    c.setAttribute('fill', 'currentColor');
+                    svg.appendChild(c);
+                }
+                p(o.d);
+                if (o.extra) p(o.extra);
+                if (o.bubble) b(o.bubble[0], o.bubble[1], o.bubble[2]);
+            });
+        });
+    </script>
+</body>
+</html>

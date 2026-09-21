@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Logic Quiz | LogicLab</title>
+    <meta name="description" content="Test your digital logic knowledge with a free DTM quiz on gates, truth tables, De Morgan's theorem and universal gates.">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dark-mode">
+
+    <nav class="navbar">
+        <div class="logo">⚡ LogicLab</div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="simulator.html">Simulator</a></li>
+            <li><a href="learn.html">Learn</a></li>
+            <li><a href="builder.html">Circuit Builder</a></li>
+            <li><a href="quiz.html" class="active">Quiz</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="theme-toggle">🌙</button>
+            <div class="hamburger">☰</div>
+        </div>
+    </nav>
+
+    <main class="page">
+        <div class="page-head">
+            <h1>DTM Logic Quiz</h1>
+            <p>Ten quick questions. Lock in your answers and see your score.</p>
+        </div>
+
+        <div class="card quiz-box" id="quiz-box">
+            <div class="quiz-progress"><div id="quiz-bar" style="width:0%"></div></div>
+            <div id="quiz-q"></div>
+            <div id="quiz-opts"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.2rem;">
+                <span class="quiz-score" id="quiz-score"></span>
+                <button class="btn btn-secondary" id="quiz-next" style="display:none;">Next →</button>
+                <button class="btn btn-primary" id="quiz-restart" style="display:none;">Try Again</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-foot">
+        <span>⚡ LogicLab — learn, build, simulate, test.</span>
+    </footer>
+
+    <script src="../js/app.js"></script>
+    <script>
+        (function () {
+            var QUESTIONS = [
+                { q: 'Which gate outputs 1 only when BOTH inputs are 1?', o: ['OR', 'AND', 'XOR', 'NOR'], a: 1 },
+                { q: 'What is the output of a NOT gate when the input is 1?', o: ['1', '0', 'Undefined', 'High Z'], a: 1 },
+                { q: 'A NAND gate is: (A · B)′. What does it output when A=1 and B=1?', o: ['1', '0', '2', 'A'], a: 1 },
+                { q: 'Which gate acts as an inequality comparator (1 when inputs differ)?', o: ['AND', 'OR', 'XOR', 'XNOR'], a: 2 },
+                { q: 'By De Morgan’s theorem, (A + B)′ equals:', o: ['A′ + B′', 'A′ · B′', 'A · B', 'A + B'], a: 1 },
+                { q: 'Which two gates are called "universal gates"?', o: ['AND & OR', 'NAND & NOR', 'XOR & XNOR', 'NOT & AND'], a: 1 },
+                { q: 'Half adder sum output is produced by which gate?', o: ['AND', 'OR', 'XOR', 'NOT'], a: 2 },
+                { q: 'How many input combinations does a 2-input gate have?', o: ['2', '3', '4', '8'], a: 2 },
+                { q: 'The output of an OR gate is 0 when:', o: ['Any input is 1', 'All inputs are 1', 'All inputs are 0', 'Inputs differ'], a: 2 },
+                { q: 'An XNOR gate outputs 1 when:', o: ['Inputs differ', 'Inputs are equal', 'Input is 0', 'Never'], a: 1 }
+            ];
+
+            var idx = 0, score = 0, locked = false;
+            var qEl = document.getElementById('quiz-q');
+            var oEl = document.getElementById('quiz-opts');
+            var bar = document.getElementById('quiz-bar');
+            var scoreEl = document.getElementById('quiz-score');
+            var next = document.getElementById('quiz-next');
+            var restart = document.getElementById('quiz-restart');
+
+            function render() {
+                locked = false;
+                var it = QUESTIONS[idx];
+                bar.style.width = ((idx) / QUESTIONS.length * 100) + '%';
+                qEl.textContent = (idx + 1) + '. ' + it.q;
+                oEl.innerHTML = '';
+                scoreEl.textContent = score + ' / ' + QUESTIONS.length;
+                it.o.forEach(function (text, i) {
+                    var b = document.createElement('button');
+                    b.className = 'quiz-opt';
+                    b.textContent = String.fromCharCode(65 + i) + ')  ' + text;
+                    b.addEventListener('click', function () { answer(i); });
+                    oEl.appendChild(b);
+                });
+                next.style.display = 'none';
+                restart.style.display = 'none';
+            }
+
+            function answer(i) {
+                if (locked) return;
+                locked = true;
+                var it = QUESTIONS[idx];
+                var btns = oEl.querySelectorAll('.quiz-opt');
+                btns.forEach(function (b, j) {
+                    b.disabled = true;
+                    if (j === it.a) b.classList.add('correct');
+                    if (j === i && i !== it.a) b.classList.add('wrong');
+                });
+                if (i === it.a) score++;
+                scoreEl.textContent = score + ' / ' + QUESTIONS.length;
+                if (idx === QUESTIONS.length - 1) {
+                    bar.style.width = '100%';
+                    restart.style.display = 'inline-flex';
+                    scoreEl.textContent = 'Final score: ' + score + ' / ' + QUESTIONS.length +
+                        (score === QUESTIONS.length ? ' — perfect!' : (score >= 7 ? ' — nice!' : ' — keep practising!'));
+                } else {
+                    next.style.display = 'inline-flex';
+                }
+            }
+
+            function restartQuiz() { idx = 0; score = 0; render(); }
+
+            next.addEventListener('click', function () { idx++; render(); });
+            restart.addEventListener('click', restartQuiz);
+            render();
+        })();
+    </script>
+</body>
+</html>

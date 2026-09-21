@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogicLab | Learn, Build, Simulate & Test Digital Logic</title>
+    <meta name="description" content="LogicLab is a free interactive digital logic playground for DTM students: drag-and-drop circuit builder, live gate simulator, logic gate lessons, truth tables and quizzes.">
+    <meta property="og:title" content="LogicLab | Digital Logic Playground">
+    <meta property="og:description" content="Build real logic circuits, simulate AND/OR/NOT/NAND/XOR gates and learn digital electronics interactively.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#0a0e14">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-mode">
+
+    <nav class="navbar">
+        <div class="logo">⚡ LogicLab</div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="pages/simulator.html">Simulator</a></li>
+            <li><a href="pages/learn.html">Learn</a></li>
+            <li><a href="pages/builder.html">Circuit Builder</a></li>
+            <li><a href="pages/quiz.html">Quiz</a></li>
+            <li><a href="pages/about.html">About</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="theme-toggle">🌙</button>
+            <div class="hamburger">☰</div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="hero-kicker">Digital Logic · Interactive</div>
+            <h1>DIGITAL LOGIC, MADE INTERACTIVE.</h1>
+            <p>Build real circuits on a canvas, wire up gates, connect bulbs and watch the signal travel.
+               Purpose-built for DTM students and anyone who loves electronics.</p>
+            <div class="hero-actions">
+                <a href="pages/builder.html" class="btn btn-primary">▶ Launch Circuit Builder</a>
+                <a href="pages/learn.html" class="btn btn-secondary">Explore Logic Gates</a>
+            </div>
+        </section>
+
+        <section class="page" style="padding-top:1rem;">
+            <div class="grid grid-3">
+                <a class="card" href="pages/builder.html">
+                    <div class="card-icon">⚡</div>
+                    <h3>Circuit Builder</h3>
+                    <p>Drag gates, switches and LEDs onto a canvas. Wire port to port, press Run, and watch the pulses travel through the circuit.</p>
+                </a>
+                <a class="card" href="pages/simulator.html">
+                    <div class="card-icon">🧪</div>
+                    <h3>Gate Simulator</h3>
+                    <p>Flip inputs on any single gate and instantly see the truth — a quick, zero-setup way to check AND, OR, XOR and friends.</p>
+                </a>
+                <a class="card" href="pages/learn.html">
+                    <div class="card-icon">📘</div>
+                    <h3>Learn Digital Logic</h3>
+                    <p>Truth tables, boolean expressions, De Morgan's laws and universal gates — explained simply, with working examples.</p>
+                </a>
+                <a class="card" href="pages/quiz.html">
+                    <div class="card-icon">🎯</div>
+                    <h3>DTM Quiz</h3>
+                    <p>Test yourself with quick multiple-choice questions and see your score instantly. Great revision for exams.</p>
+                </a>
+                <a class="card" href="pages/builder.html">
+                    <div class="card-icon">🚀</div>
+                    <h3>Project Saving</h3>
+                    <p>Save your circuits in the browser, reload them later, or export them as JSON files to share with your classmates.</p>
+                </a>
+                <a class="card" href="pages/about.html">
+                    <div class="card-icon">💡</div>
+                    <h3>About the Project</h3>
+                    <p>Why LogicLab exists, its goals for DTM education, and a roadmap of what's coming next.</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-foot">
+        <span>⚡ LogicLab — a futuristic digital electronics playground.</span>
+        <span>Made for Diploma in Technology students.</span>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

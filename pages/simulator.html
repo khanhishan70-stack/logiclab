@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Gate Simulator | LogicLab</title>
+    <meta name="description" content="Interactive logic gate simulator. Pick a gate, flip the switches and watch the symbol, output LED and live truth table react instantly.">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="dark-mode">
+
+    <nav class="navbar">
+        <div class="logo">⚡ LogicLab</div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="simulator.html" class="active">Simulator</a></li>
+            <li><a href="learn.html">Learn</a></li>
+            <li><a href="builder.html">Circuit Builder</a></li>
+            <li><a href="quiz.html">Quiz</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button id="theme-toggle">🌙</button>
+            <div class="hamburger">☰</div>
+        </div>
+    </nav>
+
+    <main class="page">
+        <div class="page-head">
+            <h1>Gate Simulator</h1>
+            <p>Pick a gate, flip the switches — output, symbol and truth table update instantly.</p>
+        </div>
+
+        <div class="card sim-card">
+            <div class="gate-picker" id="gate-picker" role="tablist">
+                <button class="gate-chip active" data-gate="AND">AND</button>
+                <button class="gate-chip" data-gate="OR">OR</button>
+                <button class="gate-chip" data-gate="NOT">NOT</button>
+                <button class="gate-chip" data-gate="NAND">NAND</button>
+                <button class="gate-chip" data-gate="NOR">NOR</button>
+                <button class="gate-chip" data-gate="XOR">XOR</button>
+                <button class="gate-chip" data-gate="XNOR">XNOR</button>
+            </div>
+
+            <div class="sim-stage">
+                <div class="sim-side" id="input-side">
+                    <div class="sim-node" id="node-a">
+                        <span class="node-tag">INPUT A</span>
+                        <button id="input-a" class="paddle" aria-pressed="false">
+                            <span class="knob"></span><span class="paddle-label">OFF</span>
+                        </button>
+                    </div>
+                    <div class="sim-node" id="node-b">
+                        <span class="node-tag">INPUT B</span>
+                        <button id="input-b" class="paddle" aria-pressed="false">
+                            <span class="knob"></span><span class="paddle-label">OFF</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sim-galaxy">
+                    <svg id="sim-symbol" class="sim-symbol" viewBox="0 0 96 56" width="96" height="56"></svg>
+                    <div class="sim-gate-name" id="sim-gate-name">AND</div>
+                    <div class="sim-gate-desc" id="sim-gate-desc"></div>
+                    <div class="expr-chip" id="sim-expr"></div>
+                </div>
+
+                <div class="sim-side">
+                    <div class="sim-node">
+                        <span class="node-tag">OUTPUT Y</span>
+                        <div id="output-result" class="out-led">
+                            <span class="out-val">0</span>
+                            <span class="out-label">LOW</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sim-tt-title">Truth table · live</div>
+            <div id="sim-tt"></div>
+        </div>
+    </main>
+
+    <footer class="site-foot">
+        <span>⚡ LogicLab — learn, build, simulate, test.</span>
+    </footer>
+
+    <script src="../js/gates.js"></script>
+    <script src="../js/truth-table.js"></script>
+    <script src="../js/simulator.js"></script>
+    <script src="../js/app.js"></script>
+</body>
+</html>
