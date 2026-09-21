@@ -1,0 +1,13 @@
+# logs / local data
+grok_logs.csv
+*.log
+
+# system
+.DS_Store
+Thumbs.db
+
+# node
+node_modules/
+
+# git
+.env
