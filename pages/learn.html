@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Digital Logic Gates | LogicLab</title>
-    <meta name="description" content="Learn AND, OR, NOT, NAND, NOR, XOR and XNOR logic gates with symbols, boolean expressions, truth tables and De Morgan's theorems.">
+    <title>Learn Digital Logic Gates — Full Course | LogicLab</title>
+    <meta name="description" content="The complete digital logic course: binary basics, AND/OR/NOT/NAND/NOR/XOR/XNOR lessons with symbols, boolean expressions, truth tables, De Morgan's theorems, universal gates and a half adder.">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="dark-mode">
@@ -27,21 +27,213 @@
 
     <main class="page">
         <div class="page-head">
-            <h1>Learn Digital Logic</h1>
-            <p>Every logic gate with its symbol, boolean expression and truth table — ready for DTM revision.</p>
+            <h1>Digital Logic — Full Course</h1>
+            <p>From "what is a gate?" to De Morgan and half adders. Read the rule, flip through the truth
+               table, then <b>prove it to yourself in the Circuit Builder</b>.</p>
         </div>
 
+        <!-- ===== 0. Before you start ===== -->
+        <div class="section-head">
+            <span class="sh-num">START</span>
+            <h2>Before you start — the 3 things you need</h2>
+        </div>
+        <div class="grid grid-2">
+            <div class="card">
+                <div class="card-icon">01</div>
+                <h3>Binary: everything is 0 or 1</h3>
+                <p>Digital circuits think in two voltage levels. We call them <b>0</b> (LOW, ~0 V) and
+                   <b>1</b> (HIGH, the supply voltage ≈ 5 V or 3.3 V). Every gate takes 0s and 1s in,
+                   and produces a 0 or a 1 out. That's the whole game.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">02</div>
+                <h3>How a truth table works</h3>
+                <p>A truth table lists <b>every possible input combination</b> and the output for each.
+                   A 2-input gate has 2² = <b>4 rows</b>. Read it like a menu: pick the row that matches
+                   your inputs, and the <b>Y</b> column tells you the answer.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">03</div>
+                <h3>The three boolean symbols</h3>
+                <ul class="info-list">
+                    <li><span class="expr-chip">·</span> is <b>AND</b> — read "dot" (<span class="kbd">A · B</span> = A and B)</li>
+                    <li><span class="expr-chip">+</span> is <b>OR</b> — read "plus" (<span class="kbd">A + B</span> = A or B)</li>
+                    <li><span class="expr-chip">′</span> or a bar is <b>NOT</b> — read "prime/bar" (<span class="kbd">A′</span> = not A)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ===== 1. The gate rules ===== -->
+        <div class="section-head">
+            <span class="sh-num">01</span>
+            <h2>The seven gate rules</h2>
+            <span class="sh-note">tap the rule → build it in the simulator</span>
+        </div>
         <div class="grid grid-2" id="gate-cards"></div>
 
-        <div class="note" style="margin-top:2.5rem;">
-            <b>De Morgan's Theorems.</b>
-            (A · B)′ = A′ + B′  and  (A + B)′ = A′ · B′. This means every NAND can behave like an OR,
-            and every NOR can behave like an AND — that's why NAND and NOR are called <b>universal gates</b>.
+        <!-- ===== 2. Boolean primer ===== -->
+        <div class="section-head">
+            <span class="sh-num">02</span>
+            <h2>Reading boolean expressions</h2>
+        </div>
+        <div class="glass">
+            <div class="note">
+                <b>Expressions combine gates.</b> In <span class="kbd">Y = A · B + C</span> read it as
+                <b>(A AND B) OR C</b> — the <span class="kbd">·</span> binds tighter than the
+                <span class="kbd">+</span>, just like × binds tighter than + in arithmetic.
+            </div>
+            <div class="note" style="border-left-color:var(--green);background:rgba(52,211,153,0.07);">
+                <b>⊕ and equality.</b> <span class="kbd">Y = A ⊕ B</span> means XOR ("exclusive or" —
+                different). <span class="kbd">Y = (A ⊕ B)′</span> is XNOR (equal). A prime right after
+                a bracket means <b>invert the whole thing</b>.
+            </div>
         </div>
 
-        <div class="note" style="border-left-color:var(--cyan);background:rgba(34,211,238,0.07);">
-            <b>Try it yourself.</b> Open the <b>Circuit Builder</b>, drop two switches into an AND gate,
-            wire it to an LED, and press ▶ Run.
+        <!-- ===== 3. Signals & the builder ===== -->
+        <div class="section-head">
+            <span class="sh-num">03</span>
+            <h2>How signals travel in a circuit</h2>
+        </div>
+        <div class="grid grid-2">
+            <div class="card">
+                <div class="card-icon">🔌</div>
+                <h3>Inputs feed outputs</h3>
+                <p>In the Circuit Builder you connect an input's <b>out port</b> to a gate's
+                   <b>in port</b>. The signal travels along the wire: switch → gate → LED.
+                   Press ▶ Run and LogicLab evaluates everything in the right order.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⏱️</div>
+                <h3>Clock &amp; pulses</h3>
+                <p>Logic is instant, but we animate it. A <b>Clock</b> flips 0 ⇄ 1 on every tick so you can
+                   watch pulses race through the circuit. That's exactly how real digital systems behave
+                   — signals changing 50–100 million times per second.</p>
+            </div>
+        </div>
+
+        <!-- ===== 4. De Morgan ===== -->
+        <div class="section-head">
+            <span class="sh-num">04</span>
+            <h2>De Morgan's Theorems</h2>
+        </div>
+        <div class="tip-box" style="margin-bottom:1rem;">
+            <div class="t-head">The single best exam tool in this whole course</div>
+            De Morgan lets you <b>flip AND ↔ OR</b> by inverting inputs and output.
+            Inverting the inputs and the output of a circuit never wastes anything — it just changes the gate.
+        </div>
+        <div class="grid grid-2">
+            <div class="card" style="border-top:2px solid var(--cyan);">
+                <span class="badge" style="--accent:var(--cyan);">THEOREM 1</span>
+                <h3 style="margin-top:.7rem;">(A · B)′ = A′ + B′</h3>
+                <p>A NAND behaves exactly like an OR of two NOTs. "Not (A and B) is the same as (not A) or (not B)."</p>
+            </div>
+            <div class="card" style="border-top:2px solid var(--violet);">
+                <span class="badge" style="--accent:var(--violet);">THEOREM 2</span>
+                <h3 style="margin-top:.7rem;">(A + B)′ = A′ · B′</h3>
+                <p>A NOR behaves exactly like an AND of two NOTs. "Not (A or B) is the same as (not A) and (not B)."</p>
+            </div>
+        </div>
+        <div class="note" style="margin-top:1.2rem;">
+            <b>Why it matters:</b> because of De Morgan, you never need an AND chip AND an OR chip —
+            <b>NAND and NOR alone can make any circuit</b>. Chips love it because fewer gate types
+            means cheaper hardware.
+        </div>
+
+        <!-- ===== 5. Universal gates ===== -->
+        <div class="section-head">
+            <span class="sh-num">05</span>
+            <h2>Universal gates: build anything with NAND (or NOR)</h2>
+        </div>
+        <div class="grid grid-2">
+            <div class="card">
+                <div class="card-icon">N</div>
+                <h3>Everything from NAND</h3>
+                <ul class="info-list">
+                    <li><b>NOT</b> — tie both inputs together: <span class="kbd">NAND(A, A) = A′</span></li>
+                    <li><b>AND</b> — NAND then NOT: <span class="kbd">(A · B)′ ′ = A · B</span></li>
+                    <li><b>OR</b> — De Morgan: <span class="kbd">NAND(A′, B′) = A + B</span></li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-icon">N</div>
+                <h3>Everything from NOR</h3>
+                <ul class="info-list">
+                    <li><b>NOT</b> — tie both inputs: <span class="kbd">NOR(A, A) = A′</span></li>
+                    <li><b>OR</b> — NOR then NOT: <span class="kbd">(A + B)′ ′ = A + B</span></li>
+                    <li><b>AND</b> — De Morgan: <span class="kbd">NOR(A′, B′) = A · B</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="note" style="margin-top:1.2rem;border-left-color:var(--amber);">
+            <b>Challenge:</b> open the <b>Circuit Builder</b> and build a real XOR using only NAND gates.
+            It takes four — a famous puzzle, and the answer is everywhere online if you get stuck.
+        </div>
+
+        <!-- ===== 6. Application ===== -->
+        <div class="section-head">
+            <span class="sh-num">06</span>
+            <h2>Putting it together: the half adder</h2>
+        </div>
+        <div class="grid grid-2">
+            <div class="lesson-card" style="--accent:var(--green);">
+                <div class="lc-top"><h3>Add two bits · the half adder</h3><span class="badge" style="--accent:var(--green);">APPLICATION</span></div>
+                <p class="gate-rule">Adding two 1-bit numbers needs two outputs: the <b>sum</b> and the
+                   <b>carry</b>. Two gates do it all: <b>XOR = sum</b>, <b>AND = carry</b>.</p>
+                <div class="tt">
+                    <table class="truth-table">
+                        <thead><tr><th>A</th><th>B</th><th>S (A⊕B)</th><th>C (A·B)</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="bin lo">0</span></td><td><span class="bin lo">0</span></td><td><span class="bin lo">0</span></td><td><span class="bin lo">0</span></td></tr>
+                            <tr><td><span class="bin lo">0</span></td><td><span class="bin hi">1</span></td><td><span class="bin hi">1</span></td><td><span class="bin lo">0</span></td></tr>
+                            <tr><td><span class="bin hi">1</span></td><td><span class="bin lo">0</span></td><td><span class="bin hi">1</span></td><td><span class="bin lo">0</span></td></tr>
+                            <tr><td><span class="bin hi">1</span></td><td><span class="bin hi">1</span></td><td><span class="bin lo">0</span></td><td><span class="bin hi">1</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon">➗</div>
+                <h3>Why XOR = sum and AND = carry?</h3>
+                <ul class="info-list">
+                    <li>0+0 = 00 → sum 0, carry 0</li>
+                    <li>1+0 = 01 → sum 1, carry 0</li>
+                    <li>1+1 = <b>10</b> → sum 0, carry 1 (this is how "2" is written in binary!)</li>
+                </ul>
+                <p style="margin-top:1rem;">The sum is <b>1 exactly when inputs differ</b> → that's XOR.
+                   The carry is <b>1 only when both are 1</b> → that's AND.</p>
+            </div>
+        </div>
+
+        <!-- ===== 7. Glossary ===== -->
+        <div class="section-head">
+            <span class="sh-num">07</span>
+            <h2>Exam glossary — know these cold</h2>
+        </div>
+        <div class="glossary">
+            <div class="card"><b>Bit</b><span>The smallest unit of digital data — a 0 or a 1.</span></div>
+            <div class="card"><b>Truth table</b><span>Lists every input combination and its output.</span></div>
+            <div class="card"><b>Boolean expression</b><span>Algebra that describes a gate with ·, +, ′.</span></div>
+            <div class="card"><b>Active HIGH / LOW</b><span>A signal that means "on" as 1, or as 0.</span></div>
+            <div class="card"><b>NAND / NOR</b><span>Universal gates — any circuit can be built from them.</span></div>
+            <div class="card"><b>De Morgan</b><span>Flipping AND↔OR via inversion of inputs &amp; output.</span></div>
+            <div class="card"><b>XOR</b><span>Inequality comparator and half-adder sum bit.</span></div>
+            <div class="card"><b>XNOR</b><span>Equality comparator; the XOR's complement.</span></div>
+            <div class="card"><b>Half adder</b><span>Adds two bits → sum (XOR) and carry (AND).</span></div>
+            <div class="card"><b>Logic level</b><span>The voltage meaning of a bit: LOW ≈ 0 V, HIGH ≈ Vcc.</span></div>
+            <div class="card"><b>Flip-flop</b><span>A memory cell made from NAND/NOR gates that holds a bit.</span></div>
+            <div class="card"><b>Propagation delay</b><span>The tiny time a real gate takes to output its answer.</span></div>
+        </div>
+
+        <!-- ===== CTA ===== -->
+        <div class="cta-strip">
+            <div>
+                <h3>Learned the rules? Prove it.</h3>
+                <p>Run a 10-question DTM quiz, or build a real circuit with the Builder.</p>
+            </div>
+            <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
+                <a href="quiz.html" class="btn btn-primary">🎯 Take the quiz</a>
+                <a href="builder.html" class="btn btn-secondary">⚡ Open the Builder</a>
+            </div>
         </div>
     </main>
 
@@ -50,25 +242,60 @@
         <span>Truth tables are generated live from the simulation engine.</span>
     </footer>
 
+    <script src="../js/app.js"></script>
     <script src="../js/gates.js"></script>
     <script src="../js/truth-table.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var types = ['AND', 'OR', 'NOT', 'NAND', 'NOR', 'XOR', 'XNOR'];
+            var ACCENT = {
+                AND: '#22d3ee', OR: '#8b5cf6', NOT: '#ec4899',
+                NAND: '#fbbf24', NOR: '#f87171', XOR: '#34d399', XNOR: '#22d3ee'
+            };
+            var RULE = {
+                AND: 'Outputs <b>1 only when ALL inputs are 1</b>. Any 0 in → 0 out.',
+                OR: 'Outputs <b>1 when ANY input is 1</b>. 0 only when every input is 0.',
+                NOT: '<b>Flips the input</b>: 1 → 0, 0 → 1. One input, one output.',
+                NAND: '<b>AND then inverted</b>. Outputs 0 only when BOTH inputs are 1, otherwise 1.',
+                NOR: '<b>OR then inverted</b>. Outputs 1 only when ALL inputs are 0, otherwise 0.',
+                XOR: 'Outputs <b>1 when inputs DIFFER</b>. 0 when they are the same.',
+                XNOR: 'Outputs <b>1 when inputs are EQUAL</b>. The opposite of XOR.'
+            };
+            var REAL = {
+                AND: 'Safety interlock: the machine runs only when BOTH the guard is closed AND the button is pressed.',
+                OR: 'Alarm or backup: rings if ANY door sensor triggers, so having more sensors makes it MORE likely to fire.',
+                NOT: 'Active-low signals: a chip that sleeps while its enable pin is HIGH is often just a NOT gate away.',
+                NAND: 'NAND flash memory (USB sticks, SSDs) is named after this gate — literally built from billions of them.',
+                NOR: 'The SR latch memory cell is two cross-wired NOR gates. It remembers which input won last.',
+                XOR: 'The half-adder SUM bit, and parity checks that catch a flipped bit in data transmission.',
+                XNOR: 'Equality checkers: comparing two copies of a password or a checksum byte — 1 means "they match".'
+            };
+            var MMM = {
+                AND: 'All → yes. If you see a single 0, the answer is already 0.',
+                OR: 'One YES is enough. It only sleeps when everyone agrees on no.',
+                NOT: 'Mirror, mirror: whatever you give it, it reflects the opposite.',
+                NAND: 'The contrarian: 0 only when you feed it 1 AND 1.',
+                NOR: 'The strictest gate: its only "yes" is to a double zero.',
+                XOR: 'DIFFERENT → dine IN (1). Same → stay OUT (0).',
+                XNOR: 'The peacekeeper: SAME → same team (1). Equal is a win.'
+            };
+
             var host = document.getElementById('gate-cards');
             types.forEach(function (t) {
                 var c = window.CircuitComponents[t]; if (!c) return;
-                var expr = window.BooleanTheory ? '' : '';
                 var card = document.createElement('div');
-                card.className = 'card';
+                card.className = 'lesson-card';
+                card.style.setProperty('--accent', ACCENT[t]);
                 card.innerHTML =
-                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;">' +
-                        '<h3 style="margin:0;">' + c.name + '</h3>' +
+                    '<div class="lc-top">' +
+                        '<h3>' + c.name + '</h3>' +
                         '<svg width="70" height="42" data-sym="' + t + '" class="sym-box"></svg>' +
+                        '<span class="badge">' + c.expr + '</span>' +
                     '</div>' +
-                    '<p>' + c.desc + '</p>' +
-                    '<div class="expr-chip" style="margin:.8rem 0 .3rem;">' + c.expr + '</div>' +
-                    '<div class="tt" id="tt-' + t + '"></div>';
+                    '<p class="gate-rule">' + RULE[t] + '</p>' +
+                    '<div class="tt" id="tt-' + t + '"></div>' +
+                    '<p class="real">' + REAL[t] + '</p>' +
+                    '<p class="mmm">' + MMM[t] + '</p>';
                 host.appendChild(card);
                 document.getElementById('tt-' + t).innerHTML = window.TruthTable.html(t);
             });
@@ -80,7 +307,6 @@
                 XOR: { d: S.OR, extra: S.XOR_TAIL }, XNOR: { d: S.OR, extra: S.XNOR_TAIL, bubble: [13, 18, 6] } };
             document.querySelectorAll('.sym-box').forEach(function (svg) {
                 var o = opts[svg.getAttribute('data-sym')];
-                var g = o;
                 var NS = 'http://www.w3.org/2000/svg';
                 var scale = 0.72, tx = 1, ty = 0;
                 function p(d) {

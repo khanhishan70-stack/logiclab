@@ -18,8 +18,19 @@
     var descEl = document.getElementById('sim-gate-desc');
     var exprEl = document.getElementById('sim-expr');
     var ttEl = document.getElementById('sim-tt');
+    var hintEl = document.getElementById('sim-hint');
 
     var state = { a: 0, b: 0, gate: 'AND' };
+
+    var EXTRA = {
+        AND: { rule: 'Y = 1 only when BOTH inputs are 1.', real: 'Safety interlocks, password checks.' },
+        OR: { rule: 'Y = 1 when ANY input is 1.', real: 'Alarms, backup circuits.' },
+        NOT: { rule: 'Y is always the opposite of the input.', real: 'Active-low signals, inverters.' },
+        NAND: { rule: 'Y = 0 only when BOTH inputs are 1.', real: 'NAND flash memory — a universal gate.' },
+        NOR: { rule: 'Y = 1 only when BOTH inputs are 0.', real: 'SR latch memory cells — a universal gate.' },
+        XOR: { rule: 'Y = 1 when the inputs DIFFER.', real: 'Half-adder sum, parity checks.' },
+        XNOR: { rule: 'Y = 1 when the inputs are EQUAL.', real: 'Equality / match comparators.' }
+    };
 
     function el(name, attrs, parent) {
         var e = document.createElementNS(NS, name);
@@ -122,6 +133,8 @@
         nameEl.textContent = d.name;
         descEl.textContent = d.desc;
         exprEl.textContent = d.expr || '';
+        var e = EXTRA[type] || {};
+        hintEl.innerHTML = e.rule ? '<b>Rule of thumb:</b> ' + e.rule + ' <span class="hint-sep">·</span> 💡 Real world: ' + e.real : '';
         drawSymbol(type);
         buildTable();
         update();

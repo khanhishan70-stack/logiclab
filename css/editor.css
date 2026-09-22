@@ -692,25 +692,28 @@
         transition: transform 0.22s ease, width 0.22s ease;
     }
     .editor-toolbar {
-        gap: 0.2rem;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        overscroll-behavior-x: contain;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        padding: 0.5rem;
+        justify-content: flex-start;
+        align-items: center;
     }
-    .editor-toolbar::-webkit-scrollbar { display: none; }
     .tb-group { flex: 0 0 auto; }
-    .tb-group:last-child {
-        position: sticky;
-        right: 0;
-        margin-left: auto;
-        background: rgba(16, 22, 32, 0.85);
-        backdrop-filter: blur(16px) saturate(130%);
-        -webkit-backdrop-filter: blur(16px) saturate(130%);
-        padding-left: 0.5rem;
+    .tb-group.sim-cts {
+        order: -1;
+        width: 100%;
+        justify-content: center;
+        gap: 0.4rem;
+        border-left: none;
+        border-bottom: 1px solid var(--line);
+        padding: 0.1rem 0 0.45rem;
+        margin-bottom: 0.35rem;
     }
-    .light-mode .tb-group:last-child { background: rgba(255, 255, 255, 0.85); }
+    .tb-group:last-child {
+        margin-left: auto;
+        padding: 0 0.2rem;
+    }
+    .light-mode .tb-group:last-child { background: none; }
     .tool-btn { min-width: 34px; height: 36px; }
     .speed-wrap { display: none; }
     .statusbar .sb-hint { display: none; }
