@@ -528,6 +528,8 @@
 .port:hover { stroke-width: 2.2; }
 .port.valid-target { stroke: var(--violet); stroke-width: 2.4; }
 .port.snap-target { fill: var(--green); stroke: var(--green); stroke-width: 2.4; }
+.port-hit { fill: transparent; pointer-events: all; cursor: crosshair; }
+@media (pointer: coarse) { .port-hit { r: 13; } }
 
 .port-label {
     fill: rgba(255, 255, 255, 0.55);
@@ -674,29 +676,58 @@
     .sidebar {
         position: absolute;
         left: 0; top: 0; bottom: 0;
-        width: 240px;
+        width: min(240px, 80vw);
         z-index: 60;
         box-shadow: 20px 0 60px -20px rgba(0, 0, 0, 0.7);
         transform: translateX(-105%);
-        transition: transform 0.2s ease;
+        transition: transform 0.22s ease;
     }
-    .sidebar.collapsed { width: 240px; transform: translateX(-105%); padding: 1rem; }
-    .sidebar:not(.collapsed) { transform: translateX(0); }
+    .sidebar.collapsed { transform: translateX(-105%); }
+    .sidebar:not(.collapsed) { transform: translateX(0); box-shadow: 20px 0 60px -20px rgba(0,0,0,.7), 300px 0 0 2000px rgba(0,0,0,.35); }
     .inspector {
         position: absolute;
         right: 0; top: 0; bottom: 0;
         z-index: 60;
         box-shadow: -20px 0 60px -20px rgba(0, 0, 0, 0.7);
+        transition: transform 0.22s ease, width 0.22s ease;
     }
-    .editor-toolbar { gap: 0.2rem; }
-    .tool-btn { min-width: 32px; }
+    .editor-toolbar {
+        gap: 0.2rem;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        overscroll-behavior-x: contain;
+    }
+    .editor-toolbar::-webkit-scrollbar { display: none; }
+    .tb-group { flex: 0 0 auto; }
+    .tb-group:last-child {
+        position: sticky;
+        right: 0;
+        margin-left: auto;
+        background: rgba(16, 22, 32, 0.85);
+        backdrop-filter: blur(16px) saturate(130%);
+        -webkit-backdrop-filter: blur(16px) saturate(130%);
+        padding-left: 0.5rem;
+    }
+    .light-mode .tb-group:last-child { background: rgba(255, 255, 255, 0.85); }
+    .tool-btn { min-width: 34px; height: 36px; }
     .speed-wrap { display: none; }
     .statusbar .sb-hint { display: none; }
+    .step-label { display: none; }
+    .empty-hint { padding: 1rem; }
+    .empty-hint .eh-title { font-size: 1.05rem; }
 }
 @media (max-width: 520px) {
-    .editor-toolbar { padding: 0.4rem; }
+    .editor-toolbar { padding: 0.35rem; }
     .tb-group { padding: 0 0.2rem; }
-    .tool-btn { min-width: 30px; height: 32px; }
+    .tool-btn { min-width: 32px; height: 34px; font-size: 0.85rem; }
+    .tool-btn.run-btn, .tool-btn.pause-btn, .tool-btn.step-btn, .tool-btn.reset-btn { padding: 0 0.6rem; }
+    .zoom-controls { bottom: 12px; right: 12px; }
+    .zoom-controls .tool-btn { min-width: 30px; height: 30px; }
+}
+@media (max-width: 380px) {
+    .tool-btn { min-width: 30px; }
 }
 
 /* Motion safety */

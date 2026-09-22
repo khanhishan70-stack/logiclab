@@ -41,6 +41,16 @@ window.CircuitEditor = (function () {
         this.bindEvents();
         this.renderAll();
         this.status({ ok: true, warnings: ['Start building: click a component from the sidebar, then press ▶ Run.'] });
+
+        /* mobile defaults: tuck panels away so the canvas is usable on phones */
+        if (this.isMobile()) {
+            this.sidebar.classList.add('collapsed');
+            this.inspector.classList.add('hidden');
+        }
+    };
+
+    Editor.prototype.isMobile = function () {
+        return window.matchMedia && window.matchMedia('(max-width: 820px)').matches;
     };
 
     Editor.prototype.els = function (id) { return this.root.querySelector('#' + id); };
@@ -132,7 +142,12 @@ window.CircuitEditor = (function () {
                     'data-comp': comp.id, 'data-port': p.id,
                     cx: cx, cy: cy, r: 4.5
                 }, g);
+                var hit = sEl('circle', {
+                    'class': 'port-hit',
+                    cx: cx, cy: cy, r: 11
+                }, g);
                 ports[p.id] = c;
+                hit.addEventListener('pointerdown', function (e) { self.onPortPointerDown(e, comp, p.id); });
                 if (p.label) {
                     var t = sEl('text', { 'class': 'port-label' }, g);
                     t.textContent = p.label;
@@ -942,7 +957,9 @@ window.CircuitEditor = (function () {
     };
 
     Editor.prototype.findPortAt = function (cx, cy, kind, excludeComp) {
-        var best = null, bestD = SNAP_PORT / this.view.zoom;
+        var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        var tol = (coarse ? 100 : SNAP_PORT);
+        var best = null, bestD = tol / this.view.zoom;
         var self = this;
         this.graph.components.forEach(function (c) {
             if (c.id === excludeComp) return;
@@ -1512,6 +1529,10 @@ window.CircuitEditor = (function () {
         this.svg.addEventListener('pointerdown', function (e) { self.onSvgPointerDown(e); });
         this.canvasWrap.addEventListener('pointermove', function (e) { self.onPointerMove(e); });
         this.canvasWrap.addEventListener('pointerup', function (e) { self.onPointerUp(e); });
+        this.canvasWrap.addEventListener('pointerdown', function () {
+            if (!self.isMobile()) return;
+            if (!self.sidebar.classList.contains('collapsed')) self.sidebar.classList.add('collapsed');
+        });
         this.canvasWrap.addEventListener('pointercancel', function () {
             self.drag = null;
             self.tempWire.style.display = 'none';

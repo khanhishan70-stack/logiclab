@@ -131,9 +131,53 @@ input, select { font-family: inherit; color: inherit; }
 .hamburger { display: none; font-size: 1.4rem; cursor: pointer; }
 
 @media (max-width: 820px) {
-    .nav-links { display: none; }
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 1rem; right: 1rem;
+        padding: 1rem;
+        background: rgba(10, 14, 20, 0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid var(--line-strong);
+        border-radius: 16px;
+        box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.8);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        z-index: 2000;
+    }
+    body.light-mode .nav-links { background: rgba(238, 242, 246, 0.95); }
+    .nav-links.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
     .hamburger { display: block; }
     .navbar { padding: 0.8rem 1rem; }
+}
+
+/* ---------- Mobile tweaks (all pages) ---------- */
+html { -webkit-text-size-adjust: 100%; }
+button, .btn { touch-action: manipulation; }
+
+@media (max-width: 820px) {
+    .hero { min-height: 62vh; padding: 2.5rem 1.1rem; }
+    .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+    .grid { gap: 1rem; }
+    .page { padding: 2rem 1.1rem 3rem; }
+    .card, .sim-card { border-radius: 16px; }
+    .quiz-opt { width: 100%; }
+    .sim-card { padding: 1rem; }
+}
+
+@media (max-width: 480px) {
+    .page { padding: 1.5rem 0.9rem 2.5rem; }
+    .hero-actions .btn { width: 100%; justify-content: center; }
+    .btn-switch { width: 100%; }
+    .controls { flex-direction: column; align-items: stretch; gap: 0.8rem; }
+    .inputs { flex-direction: column; }
+    .site-foot { flex-direction: column; gap: 0.2rem; text-align: center; }
 }
 
 /* ---------- Hero ---------- */
