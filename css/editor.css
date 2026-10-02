@@ -424,12 +424,13 @@
 
 .temp-wire {
     fill: none;
-    stroke: var(--violet);
-    stroke-width: 2;
-    stroke-dasharray: 6 5;
+    stroke: var(--cyan);
+    stroke-width: 3;
+    stroke-dasharray: 8 6;
     stroke-linecap: round;
     pointer-events: none;
-    opacity: 0.9;
+    opacity: 0.95;
+    filter: drop-shadow(0 0 6px var(--glow-cyan));
 }
 .temp-wire.shake { animation: wire-shake 0.3s ease; }
 @keyframes wire-shake {
@@ -526,10 +527,25 @@
     transition: r 0.12s ease, fill 0.12s ease, stroke 0.12s ease;
 }
 .port:hover { stroke-width: 2.2; }
-.port.valid-target { stroke: var(--violet); stroke-width: 2.4; }
-.port.snap-target { fill: var(--green); stroke: var(--green); stroke-width: 2.4; }
+.port.valid-target {
+    stroke: var(--violet);
+    stroke-width: 2.6;
+    animation: port-pulse 1.1s ease-in-out infinite;
+}
+.port.snap-target {
+    fill: var(--green);
+    stroke: var(--green);
+    stroke-width: 3;
+    r: 8;
+    filter: drop-shadow(0 0 6px var(--green));
+}
 .port-hit { fill: transparent; pointer-events: all; cursor: crosshair; }
-@media (pointer: coarse) { .port-hit { r: 13; } }
+@media (pointer: coarse) { .port-hit { r: 15; } }
+
+@keyframes port-pulse {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+}
 
 .port-label {
     fill: rgba(255, 255, 255, 0.55);

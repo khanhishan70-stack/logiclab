@@ -7,7 +7,6 @@
 window.CircuitEditor = (function () {
 
     var NS = 'http://www.w3.org/2000/svg';
-    var SNAP_PORT = 40; /* px radius for snapping a wire to a port */
     var GRID = 20;
 
     function sEl(name, attrs, parent) {
@@ -144,7 +143,7 @@ window.CircuitEditor = (function () {
                 }, g);
                 var hit = sEl('circle', {
                     'class': 'port-hit',
-                    cx: cx, cy: cy, r: 11
+                    cx: cx, cy: cy, r: 13
                 }, g);
                 ports[p.id] = c;
                 hit.addEventListener('pointerdown', function (e) { self.onPortPointerDown(e, comp, p.id); });
@@ -958,7 +957,7 @@ window.CircuitEditor = (function () {
 
     Editor.prototype.findPortAt = function (cx, cy, kind, excludeComp) {
         var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-        var tol = (coarse ? 100 : SNAP_PORT);
+        var tol = (coarse ? 120 : 60);
         var best = null, bestD = tol / this.view.zoom;
         var self = this;
         this.graph.components.forEach(function (c) {
@@ -1076,6 +1075,10 @@ window.CircuitEditor = (function () {
             this.tempWire.style.display = 'none';
             this.clearPortHighlights();
             var t = d.target;
+            if (!t) {
+                var rel = this.screenToCanvas(e.clientX, e.clientY);
+                t = this.findPortAt(rel.x, rel.y, d.isOut ? 'input' : 'output', d.comp.id);
+            }
             this.drag = null;
             if (t) {
                 var v = window.WireSystem.validate(this.graph, { comp: d.comp.id, port: d.port }, { comp: t.comp, port: t.port });

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Logic Quiz | LogicLab</title>
-    <meta name="description" content="Test your digital logic knowledge with a free DTM quiz on gates, truth tables, De Morgan's theorem and universal gates.">
+    <meta name="description" content="Test your digital logic knowledge with a free DTM quiz on gates, truth tables, De Morgan's theorem and universal gates — with gate symbols and instant explanations.">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="dark-mode">
@@ -28,17 +28,26 @@
     <main class="page">
         <div class="page-head">
             <h1>DTM Logic Quiz</h1>
-            <p>Ten quick questions. Lock in your answers and see your score.</p>
+            <p>Ten questions on gates, symbols, De Morgan and universal gates. Pick an answer, read the
+               explanation, then hit Next — keyboard works too (<span class="kbd">1</span>–<span class="kbd">4</span> to answer, <span class="kbd">Enter</span> to continue).</p>
         </div>
 
         <div class="card quiz-box" id="quiz-box">
+            <div class="quiz-top">
+                <div class="qz-counter"><span id="qz-n">1</span> / 10</div>
+                <div class="qz-score" id="quiz-score">0 / 10</div>
+            </div>
             <div class="quiz-progress"><div id="quiz-bar" style="width:0%"></div></div>
-            <div id="quiz-q"></div>
+
+            <div class="quiz-symbol" id="quiz-symbol" hidden></div>
+            <div id="quiz-q" class="quiz-q"></div>
             <div id="quiz-opts"></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.2rem;">
-                <span class="quiz-score" id="quiz-score"></span>
-                <button class="btn btn-secondary" id="quiz-next" style="display:none;">Next →</button>
-                <button class="btn btn-primary" id="quiz-restart" style="display:none;">Try Again</button>
+            <div id="quiz-fb" class="quiz-fb" hidden></div>
+
+            <div class="quiz-foot">
+                <a href="learn.html" class="btn btn-secondary">📘 Review lessons</a>
+                <button class="btn btn-primary" id="quiz-next" hidden>Next →</button>
+                <button class="btn btn-primary" id="quiz-restart" hidden>↻ Try Again</button>
             </div>
         </div>
     </main>
@@ -48,45 +57,129 @@
     </footer>
 
     <script src="../js/app.js"></script>
+    <script src="../js/gates.js"></script>
     <script>
         (function () {
             var QUESTIONS = [
-                { q: 'Which gate outputs 1 only when BOTH inputs are 1?', o: ['OR', 'AND', 'XOR', 'NOR'], a: 1 },
-                { q: 'What is the output of a NOT gate when the input is 1?', o: ['1', '0', 'Undefined', 'High Z'], a: 1 },
-                { q: 'A NAND gate is: (A · B)′. What does it output when A=1 and B=1?', o: ['1', '0', '2', 'A'], a: 1 },
-                { q: 'Which gate acts as an inequality comparator (1 when inputs differ)?', o: ['AND', 'OR', 'XOR', 'XNOR'], a: 2 },
-                { q: 'By De Morgan’s theorem, (A + B)′ equals:', o: ['A′ + B′', 'A′ · B′', 'A · B', 'A + B'], a: 1 },
-                { q: 'Which two gates are called "universal gates"?', o: ['AND & OR', 'NAND & NOR', 'XOR & XNOR', 'NOT & AND'], a: 1 },
-                { q: 'Half adder sum output is produced by which gate?', o: ['AND', 'OR', 'XOR', 'NOT'], a: 2 },
-                { q: 'How many input combinations does a 2-input gate have?', o: ['2', '3', '4', '8'], a: 2 },
-                { q: 'The output of an OR gate is 0 when:', o: ['Any input is 1', 'All inputs are 1', 'All inputs are 0', 'Inputs differ'], a: 2 },
-                { q: 'An XNOR gate outputs 1 when:', o: ['Inputs differ', 'Inputs are equal', 'Input is 0', 'Never'], a: 1 }
+                { q: 'Which gate outputs 1 only when BOTH inputs are 1?',
+                  o: ['AND', 'OR', 'XOR', 'NOR'], a: 0,
+                  ex: 'AND is the strict one — every input must be 1. A single 0 anywhere forces the output to 0.' },
+                { q: 'What comes out of a NOT gate when its input is 1?',
+                  o: ['It stays 1', 'It becomes 0', 'It doubles', 'High impedance'], a: 1,
+                  ex: 'NOT flips the level: 1 → 0 and 0 → 1. No exceptions, no arithmetic.' },
+                { q: 'This symbol represents which gate?', sym: 'NAND',
+                  o: ['AND', 'NAND', 'OR', 'NOT'], a: 1,
+                  ex: 'An AND body with a bubble (circle) on the output means "AND, then invert" — that is NAND.' },
+                { q: 'Which gate outputs 1 when the inputs are DIFFERENT?',
+                  o: ['AND', 'OR', 'XOR', 'XNOR'], a: 2,
+                  ex: 'XOR is the inequality detector: different inputs → 1, same inputs → 0.' },
+                { q: 'By De Morgan\u2019s theorem, (A · B)′ equals…',
+                  o: ['A′ + B′', 'A′ · B′', 'A · B', 'A + B'], a: 0,
+                  ex: 'Flip the operator and invert everything: AND becomes OR, so (A·B)′ = A′ + B′.' },
+                { q: 'Which two gates are called "universal gates"?',
+                  o: ['AND & OR', 'NAND & NOR', 'XOR & XNOR', 'NOT & AND'], a: 1,
+                  ex: 'With NAND alone — or NOR alone — you can build every other gate. That is why they are "universal".' },
+                { q: 'This symbol belongs to which gate?', sym: 'XOR',
+                  o: ['OR', 'NOR', 'XOR', 'XNOR'], a: 2,
+                  ex: 'The extra curved tail on the left marks the XOR family. No bubble = XOR, bubble = XNOR.' },
+                { q: 'In a half adder, which gate produces the CARRY output?',
+                  o: ['XOR', 'AND', 'OR', 'NOT'], a: 1,
+                  ex: 'Carry is 1 only when both bits are 1 — exactly what an AND gate does. XOR gives the sum bit.' },
+                { q: 'How many rows does a 3-input gate\u2019s truth table have?',
+                  o: ['3', '6', '8', '9'], a: 2,
+                  ex: '2 inputs → 4 rows, 3 inputs → 8 rows (2³). Each extra input doubles the table.' },
+                { q: 'Which gate outputs 0 only when ALL inputs are 1?',
+                  o: ['AND', 'OR', 'NAND', 'NOR'], a: 2,
+                  ex: 'NAND is AND-then-NOT: it is 0 in exactly the one row where AND would be 1.' }
             ];
 
             var idx = 0, score = 0, locked = false;
             var qEl = document.getElementById('quiz-q');
+            var symEl = document.getElementById('quiz-symbol');
             var oEl = document.getElementById('quiz-opts');
+            var fbEl = document.getElementById('quiz-fb');
             var bar = document.getElementById('quiz-bar');
+            var nEl = document.getElementById('qz-n');
             var scoreEl = document.getElementById('quiz-score');
             var next = document.getElementById('quiz-next');
             var restart = document.getElementById('quiz-restart');
+
+            var NS = 'http://www.w3.org/2000/svg';
+            var SYM = { AND: {}, OR: {}, NAND: {}, XOR: {}, NOR: {}, NOT: {}, XNOR: {} };
+
+            function drawSymbol(svg, type) {
+                var S = window.GateSymbols;
+                var orBody = type === 'OR' || type === 'XOR' || type === 'NOR' || type === 'XNOR';
+                var andBody = type === 'AND' || type === 'NAND';
+                var bubble = type === 'NAND' || type === 'NOR' || type === 'XNOR';
+                function p(d) {
+                    var el = document.createElementNS(NS, 'path');
+                    el.setAttribute('d', d);
+                    el.setAttribute('fill', 'none');
+                    el.setAttribute('stroke', 'currentColor');
+                    el.setAttribute('stroke-width', '3');
+                    el.setAttribute('stroke-linejoin', 'round');
+                    svg.appendChild(el);
+                }
+                function line(x1, y1, x2, y2) { p('M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2); }
+                if (type === 'NOT') {
+                    line(0, 28, 8, 28);
+                    p(S.NOT_TRI);
+                    var c = document.createElementNS(NS, 'circle');
+                    c.setAttribute('cx', 66); c.setAttribute('cy', 28); c.setAttribute('r', 7);
+                    c.setAttribute('fill', 'currentColor');
+                    svg.appendChild(c);
+                    line(75, 28, 96, 28);
+                    return;
+                }
+                if (type === 'AND' || type === 'NAND') { line(0, 16, 16, 16); line(0, 40, 16, 40); p(S.AND); }
+                if (type === 'OR' || type === 'XOR' || type === 'NOR' || type === 'XNOR') {
+                    line(0, 16, 16, 16); line(0, 40, 16, 40); p(S.OR);
+                    if (type === 'XOR' || type === 'XNOR') p('M 8 10 C 2 19 2 37 8 46');
+                }
+                if (bubble) {
+                    var b = document.createElementNS(NS, 'circle');
+                    b.setAttribute('cx', 68); b.setAttribute('cy', 28); b.setAttribute('r', 7);
+                    b.setAttribute('fill', 'currentColor');
+                    svg.appendChild(b);
+                }
+                line(bubble ? 78 : 68, 28, 96, 28);
+            }
+
+            function showSymbol(type) {
+                symEl.innerHTML = '';
+                symEl.hidden = !type;
+                if (!type) return;
+                var svg = document.createElementNS(NS, 'svg');
+                svg.setAttribute('viewBox', '0 0 96 56');
+                svg.setAttribute('width', '150');
+                svg.setAttribute('height', '88');
+                svg.setAttribute('aria-hidden', 'true');
+                symEl.appendChild(svg);
+                drawSymbol(svg, type);
+            }
 
             function render() {
                 locked = false;
                 var it = QUESTIONS[idx];
                 bar.style.width = ((idx) / QUESTIONS.length * 100) + '%';
-                qEl.textContent = (idx + 1) + '. ' + it.q;
+                nEl.textContent = idx + 1;
+                qEl.textContent = it.q;
+                showSymbol(it.sym);
+                fbEl.hidden = true;
+                fbEl.className = 'quiz-fb';
                 oEl.innerHTML = '';
                 scoreEl.textContent = score + ' / ' + QUESTIONS.length;
                 it.o.forEach(function (text, i) {
                     var b = document.createElement('button');
                     b.className = 'quiz-opt';
+                    b.setAttribute('data-key', String(i + 1));
                     b.textContent = String.fromCharCode(65 + i) + ')  ' + text;
                     b.addEventListener('click', function () { answer(i); });
                     oEl.appendChild(b);
                 });
-                next.style.display = 'none';
-                restart.style.display = 'none';
+                next.hidden = true;
+                restart.hidden = true;
             }
 
             function answer(i) {
@@ -99,15 +192,23 @@
                     if (j === it.a) b.classList.add('correct');
                     if (j === i && i !== it.a) b.classList.add('wrong');
                 });
-                if (i === it.a) score++;
+                var good = i === it.a;
+                if (good) score++;
                 scoreEl.textContent = score + ' / ' + QUESTIONS.length;
+                fbEl.hidden = false;
+                fbEl.className = 'quiz-fb ' + (good ? 'fb-correct' : 'fb-wrong');
+                fbEl.innerHTML = (good ? '✅ Correct! ' : '❌ Not quite. ') + it.ex;
                 if (idx === QUESTIONS.length - 1) {
                     bar.style.width = '100%';
-                    restart.style.display = 'inline-flex';
-                    scoreEl.textContent = 'Final score: ' + score + ' / ' + QUESTIONS.length +
-                        (score === QUESTIONS.length ? ' — perfect!' : (score >= 7 ? ' — nice!' : ' — keep practising!'));
+                    restart.hidden = false;
+                    var pct = Math.round(score / QUESTIONS.length * 100);
+                    scoreEl.textContent = 'Final: ' + score + ' / ' + QUESTIONS.length;
+                    qEl.innerHTML = 'Quiz complete — you scored <b>' + pct + '%</b>.<br>' +
+                        (score === QUESTIONS.length ? 'Perfect! Every gate tamed. 🏆'
+                            : (score >= 7 ? 'Nice work — almost there!' : 'Review the lessons and try again.'));
+                    fbEl.hidden = true;
                 } else {
-                    next.style.display = 'inline-flex';
+                    next.hidden = false;
                 }
             }
 
@@ -115,6 +216,16 @@
 
             next.addEventListener('click', function () { idx++; render(); });
             restart.addEventListener('click', restartQuiz);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { if (!next.hidden) next.click(); else if (!restart.hidden) restart.click(); return; }
+                var k = parseInt(e.key, 10);
+                if (k >= 1 && k <= 4 && !locked) {
+                    var btn = oEl.querySelector('.quiz-opt[data-key="' + k + '"]');
+                    if (btn && !btn.disabled) btn.click();
+                }
+            });
+
             render();
         })();
     </script>
