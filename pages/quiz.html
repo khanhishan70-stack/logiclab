@@ -35,19 +35,38 @@
         <div class="card quiz-box" id="quiz-box">
             <div class="quiz-top">
                 <div class="qz-counter"><span id="qz-n">1</span> / 10</div>
-                <div class="qz-score" id="quiz-score">0 / 10</div>
+                <div class="qz-actions">
+                    <div class="qz-score" id="quiz-score">0 / 10</div>
+                    <button class="qz-sound" id="quiz-sound" type="button" aria-pressed="true" title="Toggle answer sound">🔊</button>
+                </div>
             </div>
             <div class="quiz-progress"><div id="quiz-bar" style="width:0%"></div></div>
 
-            <div class="quiz-symbol" id="quiz-symbol" hidden></div>
-            <div id="quiz-q" class="quiz-q"></div>
-            <div id="quiz-opts"></div>
-            <div id="quiz-fb" class="quiz-fb" hidden></div>
+            <div id="quiz-body">
+                <div class="quiz-symbol" id="quiz-symbol" hidden></div>
+                <div id="quiz-q" class="quiz-q"></div>
+                <div id="quiz-opts"></div>
+                <div id="quiz-fb" class="quiz-fb" hidden></div>
 
-            <div class="quiz-foot">
-                <a href="learn.html" class="btn btn-secondary">📘 Review lessons</a>
-                <button class="btn btn-primary" id="quiz-next" hidden>Next →</button>
-                <button class="btn btn-primary" id="quiz-restart" hidden>↻ Try Again</button>
+                <div class="quiz-foot">
+                    <a href="learn.html" class="btn btn-secondary">📘 Review lessons</a>
+                    <button class="btn btn-primary" id="quiz-next" hidden>Next →</button>
+                </div>
+            </div>
+
+            <div id="quiz-result" class="quiz-result" hidden>
+                <div class="qr-ring" id="qr-ring"><span id="qr-pct">0%</span></div>
+                <h3 id="qr-title">Quiz complete!</h3>
+                <p id="qr-msg"></p>
+                <div class="qr-score-line"><b id="qr-score">0 / 10</b> correct</div>
+                <div class="qr-breakdown">
+                    <span class="qr-good">✅ <b id="qr-correct">0</b> correct</span>
+                    <span class="qr-bad">❌ <b id="qr-wrong">0</b> wrong</span>
+                </div>
+                <div class="quiz-foot" style="justify-content:center;margin-top:1.3rem;">
+                    <a href="learn.html" class="btn btn-secondary">📘 Review lessons</a>
+                    <button class="btn btn-primary" id="qr-restart">↻ Try Again</button>
+                </div>
             </div>
         </div>
     </main>
@@ -94,6 +113,15 @@
             ];
 
             var idx = 0, score = 0, locked = false;
+            var bodyEl = document.getElementById('quiz-body');
+            var resultEl = document.getElementById('quiz-result');
+            var qrPct = document.getElementById('qr-pct');
+            var qrRing = document.getElementById('qr-ring');
+            var qrTitle = document.getElementById('qr-title');
+            var qrMsg = document.getElementById('qr-msg');
+            var qrScore = document.getElementById('qr-score');
+            var qrCorrect = document.getElementById('qr-correct');
+            var qrWrong = document.getElementById('qr-wrong');
             var qEl = document.getElementById('quiz-q');
             var symEl = document.getElementById('quiz-symbol');
             var oEl = document.getElementById('quiz-opts');
@@ -102,7 +130,6 @@
             var nEl = document.getElementById('qz-n');
             var scoreEl = document.getElementById('quiz-score');
             var next = document.getElementById('quiz-next');
-            var restart = document.getElementById('quiz-restart');
 
             var NS = 'http://www.w3.org/2000/svg';
             var SYM = { AND: {}, OR: {}, NAND: {}, XOR: {}, NOR: {}, NOT: {}, XNOR: {} };
@@ -159,6 +186,25 @@
                 drawSymbol(svg, type);
             }
 
+            var SOUNDS = { correct: '../assets/audio/correct.mp3', wrong: '../assets/audio/wrong.mp3' };
+            var soundOn = true;
+            try { soundOn = localStorage.getItem('logiclab-quiz-sound') !== 'off'; } catch (e) {}
+            var audioCache = {};
+
+            function playSound(name) {
+                if (!soundOn) return;
+                try {
+                    var a = audioCache[name];
+                    if (!a) {
+                        a = audioCache[name] = new Audio(SOUNDS[name]);
+                        a.preload = 'auto';
+                    }
+                    a.currentTime = 0;
+                    var p = a.play();
+                    if (p && p.catch) p.catch(function () {});
+                } catch (e) {}
+            }
+
             function render() {
                 locked = false;
                 var it = QUESTIONS[idx];
@@ -179,7 +225,6 @@
                     oEl.appendChild(b);
                 });
                 next.hidden = true;
-                restart.hidden = true;
             }
 
             function answer(i) {
@@ -193,32 +238,66 @@
                     if (j === i && i !== it.a) b.classList.add('wrong');
                 });
                 var good = i === it.a;
+                playSound(good ? 'correct' : 'wrong');
                 if (good) score++;
                 scoreEl.textContent = score + ' / ' + QUESTIONS.length;
                 fbEl.hidden = false;
                 fbEl.className = 'quiz-fb ' + (good ? 'fb-correct' : 'fb-wrong');
                 fbEl.innerHTML = (good ? '✅ Correct! ' : '❌ Not quite. ') + it.ex;
                 if (idx === QUESTIONS.length - 1) {
-                    bar.style.width = '100%';
-                    restart.hidden = false;
-                    var pct = Math.round(score / QUESTIONS.length * 100);
-                    scoreEl.textContent = 'Final: ' + score + ' / ' + QUESTIONS.length;
-                    qEl.innerHTML = 'Quiz complete — you scored <b>' + pct + '%</b>.<br>' +
-                        (score === QUESTIONS.length ? 'Perfect! Every gate tamed. 🏆'
-                            : (score >= 7 ? 'Nice work — almost there!' : 'Review the lessons and try again.'));
-                    fbEl.hidden = true;
+                    showResult();
                 } else {
                     next.hidden = false;
                 }
             }
 
-            function restartQuiz() { idx = 0; score = 0; render(); }
+            function showResult() {
+                var pct = Math.round(score / QUESTIONS.length * 100);
+                bar.style.width = '100%';
+                bodyEl.hidden = true;
+                resultEl.hidden = false;
+                qrPct.textContent = pct + '%';
+                var ringCol = pct >= 70 ? 'var(--green)' : (pct >= 40 ? 'var(--amber)' : 'var(--red)');
+                qrRing.style.background = 'conic-gradient(' + ringCol + ' ' + pct + '%, var(--panel-2) 0)';
+                qrScore.textContent = score + ' / ' + QUESTIONS.length;
+                qrCorrect.textContent = score;
+                qrWrong.textContent = QUESTIONS.length - score;
+                qrTitle.textContent = score === 10 ? 'Perfect score! 🏆' : (pct >= 70 ? 'Great job! 🎉' : (pct >= 40 ? 'Almost there!' : 'Keep practising!'));
+                qrMsg.textContent = score === 10 ? 'Every answer right — you know your gates cold.'
+                    : (pct >= 70 ? 'Solid result. A quick look at the missed ones and it is perfect.'
+                        : 'Review the lessons below, then try again — you have the hang of it.');
+            }
+
+            function restartQuiz() {
+                idx = 0; score = 0;
+                resultEl.hidden = true;
+                bodyEl.hidden = false;
+                render();
+            }
+
+            var soundBtn = document.getElementById('quiz-sound');
+            function paintSoundBtn() {
+                soundBtn.textContent = soundOn ? '🔊' : '🔇';
+                soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+                soundBtn.classList.toggle('off', !soundOn);
+            }
+            soundBtn.addEventListener('click', function () {
+                soundOn = !soundOn;
+                try { localStorage.setItem('logiclab-quiz-sound', soundOn ? 'on' : 'off'); } catch (e) {}
+                paintSoundBtn();
+                if (soundOn) playSound('correct');
+            });
+            paintSoundBtn();
 
             next.addEventListener('click', function () { idx++; render(); });
-            restart.addEventListener('click', restartQuiz);
+            document.getElementById('qr-restart').addEventListener('click', restartQuiz);
 
             document.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') { if (!next.hidden) next.click(); else if (!restart.hidden) restart.click(); return; }
+                if (e.key === 'Enter') {
+                    if (!next.hidden) next.click();
+                    else if (!resultEl.hidden) document.getElementById('qr-restart').click();
+                    return;
+                }
                 var k = parseInt(e.key, 10);
                 if (k >= 1 && k <= 4 && !locked) {
                     var btn = oEl.querySelector('.quiz-opt[data-key="' + k + '"]');

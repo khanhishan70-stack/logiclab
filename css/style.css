@@ -593,6 +593,19 @@ button, .btn { touch-action: manipulation; }
     padding: 0.3rem 0.7rem;
     border-radius: 999px;
 }
+.qz-actions { display: flex; align-items: center; gap: 0.5rem; }
+.qz-sound {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.9rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+.qz-sound:hover { border-color: var(--cyan); background: var(--panel-2); }
+.qz-sound.off { opacity: 0.55; }
 .quiz-progress { height: 6px; background: var(--panel-2); border-radius: 4px; overflow: hidden; margin: 1.2rem 0; }
 .quiz-progress > div { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--violet)); transition: width 0.3s ease; }
 .quiz-symbol {
@@ -661,6 +674,58 @@ button, .btn { touch-action: manipulation; }
     flex-wrap: wrap;
 }
 .quiz-foot .btn:last-child { margin-left: auto; }
+
+.quiz-result {
+    text-align: center;
+    padding: 1.6rem 0.4rem 0.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+}
+.qr-ring {
+    width: 132px; height: 132px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: conic-gradient(var(--green) 0%, var(--panel-2) 0);
+    margin-bottom: 0.4rem;
+    position: relative;
+}
+.qr-ring::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    background: var(--bg-1);
+}
+.qr-ring span {
+    position: relative;
+    z-index: 1;
+    font-family: var(--mono);
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text);
+}
+.quiz-result h3 { font-size: 1.3rem; }
+.quiz-result p, .quiz-result .qr-score-line { color: var(--muted); font-size: 0.92rem; }
+.quiz-result .qr-score-line b { color: var(--green); font-family: var(--mono); }
+.qr-breakdown {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.2rem;
+}
+.qr-breakdown span {
+    font-size: 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.4rem 0.85rem;
+    background: var(--panel);
+}
+.qr-good b { color: var(--green); font-family: var(--mono); }
+.qr-bad b { color: var(--red); font-family: var(--mono); }
 
 /* ---------- Footer ---------- */
 footer.site-foot {
